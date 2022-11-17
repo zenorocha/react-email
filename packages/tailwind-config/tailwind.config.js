@@ -1,4 +1,26 @@
 const colors = require('@radix-ui/colors');
+const { fontFamily } = require('tailwindcss/defaultTheme');
+const plugin = require('tailwindcss/plugin');
+
+const iOsHeight = plugin(function ({ addUtilities }) {
+  const supportsTouchRule = '@supports (-webkit-touch-callout: none)';
+  const webkitFillAvailable = '-webkit-fill-available';
+
+  const utilities = {
+    '.min-h-screen-ios': {
+      [supportsTouchRule]: {
+        minHeight: webkitFillAvailable,
+      },
+    },
+    '.h-screen-ios': {
+      [supportsTouchRule]: {
+        height: webkitFillAvailable,
+      },
+    },
+  };
+
+  addUtilities(utilities, ['responsive']);
+});
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -11,6 +33,24 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        gradient:
+          'linear-gradient(145.37deg, rgba(255, 255, 255, 0.09) -8.75%, rgba(255, 255, 255, 0.027) 83.95%)',
+        gradientHover:
+          'linear-gradient(145.37deg, rgba(255, 255, 255, 0.1) -8.75%, rgba(255, 255, 255, 0.057) 83.95%)',
+        shine:
+          'linear-gradient(45deg, rgba(255,255,255,0) 45%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 55%,rgba(255,255,255,0) 100%)',
+      },
+      keyframes: {
+        shine: {
+          '0%': { backgroundPosition: '-100%' },
+          '100%': { backgroundPosition: '100%' },
+        },
+        dash: {
+          '0%': { strokeDashoffset: 1000 },
+          '100%': { strokeDashoffset: 0 },
+        },
+      },
       colors: {
         gray: {
           1: colors.mauveDark.mauve1,
@@ -84,19 +124,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: [
-          'Inter',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'Helvetica',
-          'Arial',
-          'sans-serif',
-          'Apple Color Emoji',
-          'Segoe UI Emoji',
-        ],
+        sans: ['var(--font-inter)', ...fontFamily.sans],
       },
     },
   },
-  plugins: [],
+  plugins: [iOsHeight],
 };

@@ -5,7 +5,7 @@ import * as React from 'react';
 interface CodeProps {
   children: any;
   className?: string;
-  language?: string;
+  language?: Language;
 }
 
 const theme = {
