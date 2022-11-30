@@ -4,9 +4,10 @@ module.exports = {
   resetMocks: true,
   restoreMocks: true,
   verbose: true,
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/node_modules/', '/build/'],
   roots: ['<rootDir>/src'],
+  setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
   transform: {
     '^.+\\.ts?$': 'ts-jest',
     '^.+\\.(js|jsx)$': 'babel-jest',
