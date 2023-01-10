@@ -2,6 +2,9 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { Heading } from './heading';
 import { Text } from './text';
+import { Kbd } from './kbd';
+import { Tooltip } from './tooltip';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { Send } from './send';
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 
@@ -16,11 +19,13 @@ interface TopbarProps extends RootProps {
 }
 
 export const Topbar = React.forwardRef<TopbarElement, Readonly<TopbarProps>>(
-  (
-    { className, title, markup, viewMode, setViewMode, ...props },
-    forwardedRef,
-  ) => {
-    const columnWidth = 'w-[200px]';
+  ({ className, title, viewMode, setViewMode, ...props }, forwardedRef) => {
+    const showDesktopHotkey = 'q';
+    const showSourceHotkey = 'w';
+
+    useHotkeys(showDesktopHotkey, () => setViewMode('desktop'));
+    useHotkeys(showSourceHotkey, () => setViewMode('source'));
+
 
     return (
       <header
@@ -36,20 +41,43 @@ export const Topbar = React.forwardRef<TopbarElement, Readonly<TopbarProps>>(
             {title}
           </Heading>
         </div>
+        {setViewMode && (
+          <ToggleGroup.Root
+            className="items-center bg-slate-2 p-1.5 flex gap-1 border border-slate-6 rounded-md absolute top-4 right-4"
+            type="single"
+            value={viewMode}
+            aria-label="View mode"
+            onValueChange={(value) => {
+              if (!value) {
+                return setViewMode('desktop');
+              }
+              setViewMode(value);
+            }}
+          >
+            <ToggleGroup.Item
+              asChild
+              value="desktop"
+            >
+              <Tooltip>
+                <Tooltip.Trigger className={classnames(
+                  'text-sm text-slate-11 rounded px-1.5 py-0.5',
+                  {
+                    'text-slate-12 bg-slate-3 font-medium':
+                      viewMode === 'desktop',
+                  },
+                )}>
+                  Desktop
+                </Tooltip.Trigger>
+                <Tooltip.Content>
+                  <span className="text-xs">
+                    Desktop view <Kbd>{showDesktopHotkey}</Kbd>
+                  </span>
+                </Tooltip.Content>
+              </Tooltip>
+            </ToggleGroup.Item>
+            <ToggleGroup.Item
+              value="source"
 
-        <div className={`${columnWidth}`}>
-          {setViewMode && (
-            <ToggleGroup.Root
-              className="w-[145px] m-auto items-center bg-slate-2 p-1.5 flex gap-1 border border-slate-6 rounded-md"
-              type="single"
-              value={viewMode}
-              aria-label="View mode"
-              onValueChange={(value) => {
-                if (!value) {
-                  return setViewMode('desktop');
-                }
-                setViewMode(value);
-              }}
             >
               <ToggleGroup.Item
                 className={classnames(
